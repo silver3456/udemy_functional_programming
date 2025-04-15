@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class DriverFactory {
+
+    // Example of using Supplier in Test Automation
     private static final Supplier<WebDriver> chromeSupplier = () -> {
         WebDriverManager.chromedriver().clearResolutionCache().setup();
         return new ChromeDriver();

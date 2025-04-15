@@ -1,15 +1,9 @@
 package com.udemy.java.test;
 
 import com.udemy.supplier.DriverFactory;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.*;
-
-
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 public class DriverTest {
 
@@ -21,20 +15,14 @@ public class DriverTest {
         this.driver = DriverFactory.getDriver(browser);
     }
 
-    /**
-     @Parameters("browser")
-    public void beforeSetUp(@Optional("chrome") String browser) {
-        this.driver = DriverFactory.getDriver(browser);
-
-        driver.manage().timeouts().implicitlyWait(getDefaultWait(), TimeUnit.SECONDS);
-        driver.manage().window().maximize();
-    }
-     */
-
     @Test
-    public void googleTest(){
-//        this.driver.get("https://google.com/");
+    public void yandexTest() {
+
         this.driver.get("https://yandex.ru/");
+        // Example of using Consumer
+        // It returns a list of WebElements, and we provide the behavior to this data
+        this.driver.findElements(By.tagName("a")).
+                forEach(e-> System.out.println(e.getText()));
     }
 
 
