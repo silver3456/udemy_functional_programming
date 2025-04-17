@@ -1,5 +1,6 @@
 package com.udemy.java.test;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.udemy.predicate.Rules;
 import com.udemy.supplier.DriverFactory;
 import org.openqa.selenium.By;
@@ -9,6 +10,7 @@ import org.testng.annotations.*;
 
 import javax.sound.midi.Soundbank;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 public class DriverTest {
@@ -37,10 +39,10 @@ public class DriverTest {
 
         //Remove 's' or 'S'
         Predicate<WebElement> hasLetterS = (webElement -> webElement.getText().toLowerCase().contains("c"));
-        System.out.println("Before:: " +  elements.size());
+        System.out.println("Before:: " + elements.size());
         elements.removeIf(isBlank.or(hasLetterS));
-        System.out.println("After:: " +  elements.size());
-        elements.forEach(e-> System.out.println(e.getText()));
+        System.out.println("After:: " + elements.size());
+        elements.forEach(e -> System.out.println(e.getText()));
 
     }
 
@@ -50,15 +52,48 @@ public class DriverTest {
         this.driver.get("https://google.com/");
 
         List<WebElement> elements = this.driver.findElements(By.tagName("a"));
-        System.out.println("Before:: " +  elements.size());
+        System.out.println("Before:: " + elements.size());
 //        Rules.get().forEach(rule -> elements.removeIf(rule));
         Rules.get().forEach(elements::removeIf);
 
-        System.out.println("After:: " +  elements.size());
-        elements.forEach(e-> System.out.println(e.getText()));
+        System.out.println("After:: " + elements.size());
+        elements.forEach(e -> System.out.println(e.getText()));
+    }
 
+    @Test
+    public void googleTestStream() {
+        this.driver.get("https://google.com/");
+        this.driver.findElements(By.tagName("a"))
+                .stream()
+                .map(e -> e.getText().trim())
+                .filter(link -> !link.isEmpty())
+                .filter(link -> !link.toLowerCase().contains("s"))
+                .map(String::toUpperCase)
+                .forEach(System.out::println);
+    }
 
+    @Test(dataProvider = "gender")
+    public void checkBoxTest(String gender) {
+        driver.get("https://vins-udemy.s3.amazonaws.com/java/html/java8-stream-table-1.html");
+        this.driver.findElements(By.tagName("tr"))
+                .stream()
+                .skip(1)
+                .map(tr -> tr.findElements(By.tagName("td")))
+                .filter(tdList -> tdList.size() == 4)
+                .filter(td -> td.get(1).getText().equalsIgnoreCase(gender))
+                .map(tdList -> tdList.get(3))
+                .map(td -> td.findElement(By.tagName("input")))
+                .forEach(WebElement::click);
 
+        Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+    }
+
+    @DataProvider(name = "gender")
+    public Object[] testdata() {
+        return new Object[]{
+                "male",
+                "female"
+        };
     }
 
 
