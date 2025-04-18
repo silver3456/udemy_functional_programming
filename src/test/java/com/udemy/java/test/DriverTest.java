@@ -1,5 +1,6 @@
 package com.udemy.java.test;
 
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.udemy.predicate.Rules;
 import com.udemy.supplier.DriverFactory;
@@ -78,24 +79,22 @@ public class DriverTest {
         this.driver.findElements(By.tagName("tr"))
                 .stream()
                 .skip(1)
-                .map(tr -> tr.findElements(By.tagName("td")))
-                .filter(tdList -> tdList.size() == 4)
+                .map(trList -> trList.findElements(By.tagName("td"))) // td list
+                .filter(tdList -> tdList.size() == 4) //make sure there are 4 tags inside the list, error check
                 .filter(td -> td.get(1).getText().equalsIgnoreCase(gender))
-                .map(tdList -> tdList.get(3))
-                .map(td -> td.findElement(By.tagName("input")))
+                .map(tdList -> tdList.get(3))// td containing checkbox
+                .map(td -> td.findElement(By.tagName("input"))) //checkbox element
                 .forEach(WebElement::click);
-
-        Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
     }
 
+
     @DataProvider(name = "gender")
-    public Object[] testdata() {
+    public Object[] testData() {
         return new Object[]{
                 "male",
                 "female"
         };
     }
-
 
     @AfterTest
     public void quitDriver() {
