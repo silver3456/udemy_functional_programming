@@ -1,15 +1,12 @@
 package com.udemy.streams;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Test {
     public static void main(String[] args) {
-        int a = 10;
-        int b = 20;
 
-        int sum = a + b;
-        b = sum - b;
-        a = sum - a;
-
-        System.out.println("a : " + a + " " + "b : " + b);
+        List<Integer> list = Arrays.asList(1, 2, 3);
 
     }
 }
