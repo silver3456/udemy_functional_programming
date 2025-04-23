@@ -21,4 +21,26 @@ public class LinkUtil {
         }
         return responsecode;
     }
+
+    public static int getResponseCodeImproved(String link) {
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(link);
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD"); // faster than GET for checking availability
+            connection.setConnectTimeout(3000);  // short timeout for responsiveness
+            connection.setReadTimeout(3000);
+            connection.connect();
+
+            return connection.getResponseCode();
+
+        } catch (Exception e) {
+            return -1; // Treat any error as broken
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
 }
